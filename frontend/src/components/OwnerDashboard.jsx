@@ -1,0 +1,281 @@
+import React, { useState, useEffect } from 'react';
+import { getContractWithSigner, getProvider } from '../utils/contract';
+import { ethers } from 'ethers';
+import { animateCounter } from '../utils/motion';
+
+// Centralised error classifier — keeps UI messages consistent
+const parseEthError = (err) => {
+  if (err.code === 4001 || err.code === 'ACTION_REJECTED') return 'Transaction rejected by user.';
+  if (err.code === -32002) return 'MetaMask popup already open — check the MetaMask icon.';
+  if (err.code === 'NETWORK_ERROR' || err.code === -32603) return 'RPC error — check your network connection.';
+  if (err.code === 'INSUFFICIENT_FUNDS') return 'Insufficient funds for this transaction.';
+  if (
+    err.message?.toLowerCase().includes('wrong network') ||
+    err.message?.toLowerCase().includes('chain')
+  ) return 'Wrong network — switch MetaMask to Sepolia Testnet.';
+  return err.reason || err.shortMessage || err.message || 'Unknown error.';
+};
+
+function OwnerDashboard({ account }) {
+  const [agents, setAgents] = useState([]);
+  const [newAgent, setNewAgent] = useState('');
+  const [newLimit, setNewLimit] = useState('');
+  const [depositAmount, setDepositAmount] = useState('');
+  const [contractBalance, setContractBalance] = useState('0');
+
+  // Animated display counters
+  const [dispTotal, setDispTotal] = useState(0);
+  const [dispActive, setDispActive] = useState(0);
+
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [isDepositing, setIsDepositing] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null);
+  const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [contractOffline, setContractOffline] = useState(false);
+
+  const loadAgents = async () => {
+    setContractOffline(false);
+    try {
+      const contract = await getContractWithSigner();
+      const filter = contract.filters.AgentRegistered();
+      const events = await contract.queryFilter(filter);
+      const loaded = [];
+      for (let event of events) {
+        const addr = event.args.agent;
+        const info = await contract.getAgentInfo(addr);
+        loaded.push({
+          address: addr,
+          limit: ethers.formatEther(info.limit),
+          totalSpent: ethers.formatEther(info.totalSpent),
+          isPaused: info.isPaused,
+          isRegistered: info.isRegistered,
+        });
+      }
+      setAgents(loaded);
+      animateCounter(0, loaded.length, 800, setDispTotal);
+      animateCounter(0, loaded.filter(a => !a.isPaused).length, 800, setDispActive);
+
+      const provider = getProvider();
+      const contractAddr = await contract.getAddress();
+      const bal = await provider.getBalance(contractAddr);
+      setContractBalance(parseFloat(ethers.formatEther(bal)).toFixed(4));
+    } catch (err) {
+      console.warn('OwnerDashboard: contract not available —', err.message);
+      setContractOffline(true);
+    }
+  };
+
+  useEffect(() => { loadAgents(); }, [account]);
+
+  const flash = (msg) => {
+    setSuccessMsg(msg);
+    setTimeout(() => setSuccessMsg(''), 4000);
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!ethers.isAddress(newAgent)) { setError('Invalid agent address.'); return; }
+
+    // Validate via parseEther to catch non-numeric or zero values without floating-point quirks
+    let parsedLimit;
+    try {
+      parsedLimit = ethers.parseEther(newLimit.trim());
+      if (parsedLimit <= 0n) throw new Error('zero');
+    } catch {
+      setError('Spending limit must be a valid positive ETH amount (e.g. 0.05).');
+      return;
+    }
+
+    setIsRegistering(true);
+    try {
+      const contract = await getContractWithSigner();
+      const tx = await contract.registerAgent(newAgent, parsedLimit);
+      await tx.wait();
+      await loadAgents();
+      setNewAgent(''); setNewLimit('');
+      flash('Agent registered successfully.');
+    } catch (err) { setError(parseEthError(err)); }
+    finally { setIsRegistering(false); }
+  };
+
+  const handleTogglePause = async (agentAddr, isPaused) => {
+    setActionLoading(agentAddr);
+    setError('');
+    try {
+      const contract = await getContractWithSigner();
+      const tx = isPaused ? await contract.unpauseAgent(agentAddr) : await contract.pauseAgent(agentAddr);
+      await tx.wait();
+      await loadAgents();
+    } catch (err) { setError(parseEthError(err)); }
+    finally { setActionLoading(null); }
+  };
+
+  const handleDeposit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // Validate via parseEther to avoid JS float issues with small numbers
+    let parsedDeposit;
+    try {
+      parsedDeposit = ethers.parseEther(depositAmount.trim());
+      if (parsedDeposit <= 0n) throw new Error('zero');
+    } catch {
+      setError('Deposit amount must be a valid positive ETH value (e.g. 0.1).');
+      return;
+    }
+
+    setIsDepositing(true);
+    try {
+      const signer = await getProvider().getSigner();
+      const contract = await getContractWithSigner();
+      const targetAddr = await contract.getAddress();
+      const tx = await signer.sendTransaction({ to: targetAddr, value: parsedDeposit });
+      await tx.wait();
+      setDepositAmount('');
+      await loadAgents();
+      flash(`Deposited ${depositAmount} ETH successfully.`);
+    } catch (err) { setError(parseEthError(err)); }
+    finally { setIsDepositing(false); }
+  };
+
+  const short = (a) => `${a.slice(0, 8)}…${a.slice(-6)}`;
+
+  return (
+    <div style={{ marginBottom: '1.5rem' }}>
+      {/* ── Stats Row ── */}
+      <div className="stats-row">
+        <div className="stat-card">
+          <div className="stat-icon">🤖</div>
+          <div className="stat-value">{dispTotal}</div>
+          <div className="stat-label">Registered Agents</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">✅</div>
+          <div className="stat-value">{dispActive}</div>
+          <div className="stat-label">Active Agents</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">⬡</div>
+          <div className="stat-value" style={{ fontSize: '1.4rem' }}>{contractBalance}</div>
+          <div className="stat-label">Contract Balance (ETH)</div>
+        </div>
+      </div>
+
+      {/* ── Owner Panel ── */}
+      <div className="panel panel-accent panel-scanline">
+        <h2 className="panel-title">
+          <span className="title-icon purple">⬡</span>
+          OWNER DASHBOARD
+        </h2>
+
+        {contractOffline && (
+          <div style={{
+            background: 'rgba(255,45,85,0.07)', border: '1px solid rgba(255,45,85,0.2)',
+            borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1.25rem',
+            fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--danger)',
+          }}>
+            ⚠ Contract not deployed on this network. Deploy to Sepolia first.
+          </div>
+        )}
+        {error && <div className="error-message" role="alert" style={{ marginBottom: '1.25rem' }}>{error}</div>}
+        {successMsg && <div className="success-message" role="status">{successMsg}</div>}
+
+        <div className="owner-grid">
+          {/* Register */}
+          <div>
+            <div className="section-label">Register New Agent</div>
+            <form onSubmit={handleRegister}>
+              <div className="form-group">
+                <label htmlFor="agent-address-input">Agent Address</label>
+                <input id="agent-address-input" type="text" className="form-control" placeholder="0x…" value={newAgent} onChange={e => setNewAgent(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="agent-limit-input">Spending Limit (ETH)</label>
+                <input id="agent-limit-input" type="number" step="any" className="form-control" placeholder="0.00" value={newLimit} onChange={e => setNewLimit(e.target.value)} />
+              </div>
+              <button id="register-agent-btn" type="submit" className="btn" disabled={isRegistering || !newAgent || !newLimit}>
+                {isRegistering ? <><span className="spinner" />PROCESSING…</> : '+ REGISTER AGENT'}
+              </button>
+            </form>
+          </div>
+
+          {/* Deposit */}
+          <div>
+            <div className="section-label">Deposit ETH to Contract</div>
+            <form onSubmit={handleDeposit}>
+              <div className="form-group">
+                <label htmlFor="deposit-amount-input">Amount (ETH)</label>
+                <input id="deposit-amount-input" type="number" step="any" className="form-control" placeholder="0.00" value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
+              </div>
+              <button id="deposit-btn" type="submit" className="btn" disabled={isDepositing || !depositAmount}>
+                {isDepositing ? <><span className="spinner" />DEPOSITING…</> : '↑ DEPOSIT'}
+              </button>
+            </form>
+
+            {/* Contract address hint */}
+            <div style={{ marginTop: '1.5rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '0.35rem' }}>
+                CONTRACT VAULT
+              </div>
+              <div style={{ fontFamily: 'var(--font-head)', fontSize: '1.4rem', color: 'var(--neon)', textShadow: 'var(--neon-glow)' }}>
+                {contractBalance} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ETH</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Agent Table ── */}
+        <div className="section-label" style={{ marginTop: '2rem' }}>Registered Agents</div>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Address</th>
+                <th>Limit (ETH)</th>
+                <th>Spent (ETH)</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {agents.length === 0 ? (
+                <tr><td colSpan="5" className="table-empty">No agents registered yet.</td></tr>
+              ) : agents.map(agent => (
+                <tr key={agent.address}>
+                  <td style={{ fontFamily: 'var(--font-mono)' }}>{short(agent.address)}</td>
+                  <td>{agent.limit}</td>
+                  <td>
+                    <span style={{ color: parseFloat(agent.totalSpent) > 0 ? 'var(--neon)' : 'var(--text-muted)' }}>
+                      {agent.totalSpent}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`badge ${agent.isPaused ? 'badge-paused' : 'badge-active'}`}>
+                      {agent.isPaused ? '⏸ PAUSED' : 'ACTIVE'}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      id={`toggle-agent-${agent.address}`}
+                      className={`btn btn-sm ${agent.isPaused ? '' : 'btn-danger'}`}
+                      onClick={() => handleTogglePause(agent.address, agent.isPaused)}
+                      disabled={actionLoading === agent.address}
+                    >
+                      {actionLoading === agent.address
+                        ? <span className="spinner" style={{ width: '10px', height: '10px' }} />
+                        : agent.isPaused ? 'RESUME' : 'PAUSE'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default OwnerDashboard;
