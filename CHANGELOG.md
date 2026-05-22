@@ -123,3 +123,4 @@
 - **2026-05-18**: feat(contracts): implement core token transfer and balance tracking logic
 - **2026-05-20**: test(contracts): add initial ethers.js deployment test fixtures
 - **2026-05-21**: test(contracts): add unit tests for state initialization and events
+- **2026-05-22**: test(contracts): verify unauthorized caller rejection and custom reverts
