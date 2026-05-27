@@ -125,3 +125,4 @@
 - **2026-05-21**: test(contracts): add unit tests for state initialization and events
 - **2026-05-22**: test(contracts): verify unauthorized caller rejection and custom reverts
 - **2026-05-26**: feat(scripts): add automated local network deployment script
+- **2026-05-27**: feat(scripts): add contract verification task for etherscan/blockscout
