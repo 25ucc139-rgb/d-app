@@ -127,3 +127,4 @@
 - **2026-05-26**: feat(scripts): add automated local network deployment script
 - **2026-05-27**: feat(scripts): add contract verification task for etherscan/blockscout
 - **2026-06-05**: docs: add initial architecture specification and deployment prerequisites
+- **2026-06-11**: feat(frontend): initialize react frontend workspace with vite
