@@ -130,3 +130,4 @@
 - **2026-06-11**: feat(frontend): initialize react frontend workspace with vite
 - **2026-06-17**: feat(frontend): configure tailwindcss styling and global color palette
 - **2026-06-17**: feat(web3): integrate ethers/web3 provider and window.ethereum listener
+- **2026-06-19**: feat(wallet): create wallet connection button and account modal
