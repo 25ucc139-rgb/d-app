@@ -135,3 +135,4 @@
 - **2026-07-02**: feat(ui): design modern glassmorphic dashboard card components
 - **2026-07-05**: feat(contracts): add batch transaction processing to minimize gas fees
 - **2026-07-07**: test(contracts): add gas benchmark reports for batch operations
+- **2026-07-12**: refactor(frontend): decouple contract hooks from presentation components
