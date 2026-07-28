@@ -10,3 +10,5 @@ Updated on July 11, 2026 by Chetanay agarwal.
 - Purpose: docs: document contract ABI exports and client integration steps
 
 <!-- Revision: 2026-06-27 - docs: document contract ABI exports and client integration steps -->
+
+<!-- Revision: 2026-07-28 - docs: document contract ABI exports and client integration steps -->
