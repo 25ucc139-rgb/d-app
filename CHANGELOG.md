@@ -139,3 +139,4 @@
 - **2026-07-19**: feat(frontend): add contract read state polling and cache sync
 - **2026-07-20**: feat(frontend): implement write transaction lifecycle notifications
 - **2026-07-23**: fix(frontend): handle user rejection and metamask disconnect events
+- **2026-07-28**: style(ui): polish transaction pending spinner and toast animations
