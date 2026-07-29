@@ -141,3 +141,4 @@
 - **2026-07-23**: fix(frontend): handle user rejection and metamask disconnect events
 - **2026-07-28**: style(ui): polish transaction pending spinner and toast animations
 - **2026-07-28**: docs: document contract ABI exports and client integration steps
+- **2026-07-29**: feat(contracts): add emergency pause mechanism and circuit breaker
