@@ -142,3 +142,4 @@
 - **2026-07-28**: style(ui): polish transaction pending spinner and toast animations
 - **2026-07-28**: docs: document contract ABI exports and client integration steps
 - **2026-07-29**: feat(contracts): add emergency pause mechanism and circuit breaker
+- **2026-07-30**: test(contracts): add test cases for paused state and recovery flow
