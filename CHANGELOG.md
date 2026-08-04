@@ -144,3 +144,4 @@
 - **2026-07-29**: feat(contracts): add emergency pause mechanism and circuit breaker
 - **2026-07-30**: test(contracts): add test cases for paused state and recovery flow
 - **2026-08-04**: ci: setup GitHub Actions workflow for solhint and automated tests
+- **2026-08-04**: refactor(scripts): modularize deployment parameters into environment config
