@@ -145,3 +145,4 @@
 - **2026-07-30**: test(contracts): add test cases for paused state and recovery flow
 - **2026-08-04**: ci: setup GitHub Actions workflow for solhint and automated tests
 - **2026-08-04**: refactor(scripts): modularize deployment parameters into environment config
+- **2026-08-05**: feat(frontend): add etherscan transaction link explorer generator
