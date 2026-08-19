@@ -146,3 +146,4 @@
 - **2026-08-04**: ci: setup GitHub Actions workflow for solhint and automated tests
 - **2026-08-04**: refactor(scripts): modularize deployment parameters into environment config
 - **2026-08-05**: feat(frontend): add etherscan transaction link explorer generator
+- **2026-08-19**: feat(ui): add dark and light theme toggle support
