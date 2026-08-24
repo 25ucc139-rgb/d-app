@@ -147,3 +147,4 @@
 - **2026-08-04**: refactor(scripts): modularize deployment parameters into environment config
 - **2026-08-05**: feat(frontend): add etherscan transaction link explorer generator
 - **2026-08-19**: feat(ui): add dark and light theme toggle support
+- **2026-08-24**: fix(contracts): optimize storage packing to reduce deployment gas costs
