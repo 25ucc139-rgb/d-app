@@ -151,3 +151,4 @@
 - **2026-08-24**: test: add fuzz testing scenarios for edge cases and overflow bounds
 - **2026-08-28**: perf(frontend): memoize contract read calls with react custom hooks
 - **2026-08-30**: feat(frontend): add empty state illustrations and error boundaries
+- **2026-09-05**: docs: add sequence diagram for smart contract interaction lifecycle
