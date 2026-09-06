@@ -152,3 +152,4 @@
 - **2026-08-28**: perf(frontend): memoize contract read calls with react custom hooks
 - **2026-08-30**: feat(frontend): add empty state illustrations and error boundaries
 - **2026-09-05**: docs: add sequence diagram for smart contract interaction lifecycle
+- **2026-09-06**: feat(contracts): add fee recipient withdrawal logic with timelock
