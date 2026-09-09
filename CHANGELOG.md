@@ -153,3 +153,4 @@
 - **2026-08-30**: feat(frontend): add empty state illustrations and error boundaries
 - **2026-09-05**: docs: add sequence diagram for smart contract interaction lifecycle
 - **2026-09-06**: feat(contracts): add fee recipient withdrawal logic with timelock
+- **2026-09-09**: test: verify timelock security constraints and event emission
