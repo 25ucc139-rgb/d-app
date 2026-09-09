@@ -154,3 +154,4 @@
 - **2026-09-05**: docs: add sequence diagram for smart contract interaction lifecycle
 - **2026-09-06**: feat(contracts): add fee recipient withdrawal logic with timelock
 - **2026-09-09**: test: verify timelock security constraints and event emission
+- **2026-09-09**: refactor(frontend): improve typescript interfaces and contract typing
