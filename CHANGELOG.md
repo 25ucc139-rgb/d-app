@@ -155,3 +155,4 @@
 - **2026-09-06**: feat(contracts): add fee recipient withdrawal logic with timelock
 - **2026-09-09**: test: verify timelock security constraints and event emission
 - **2026-09-09**: refactor(frontend): improve typescript interfaces and contract typing
+- **2026-09-14**: feat(ui): add transaction history drawer with timestamp formatting
