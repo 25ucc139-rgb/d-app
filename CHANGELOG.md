@@ -158,3 +158,4 @@
 - **2026-09-14**: feat(ui): add transaction history drawer with timestamp formatting
 - **2026-09-16**: fix: resolve RPC timeout edge case during high network congestion
 - **2026-09-21**: perf: bundle contract ABIs and lazy-load secondary pages
+- **2026-09-21**: docs: add comprehensive troubleshooting guide for common web3 issues
