@@ -157,3 +157,4 @@
 - **2026-09-09**: refactor(frontend): improve typescript interfaces and contract typing
 - **2026-09-14**: feat(ui): add transaction history drawer with timestamp formatting
 - **2026-09-16**: fix: resolve RPC timeout edge case during high network congestion
+- **2026-09-21**: perf: bundle contract ABIs and lazy-load secondary pages
