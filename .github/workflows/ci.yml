@@ -8,3 +8,5 @@ Updated on August 04, 2026 by Chetanay agarwal.
 
 - Component: `.github/workflows/ci.yml`
 - Purpose: ci: setup GitHub Actions workflow for solhint and automated tests
+
+<!-- Revision: 2026-09-25 - ci: add automated gas reporting step to CI pipeline -->

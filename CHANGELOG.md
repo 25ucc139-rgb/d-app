@@ -160,3 +160,4 @@
 - **2026-09-21**: perf: bundle contract ABIs and lazy-load secondary pages
 - **2026-09-21**: docs: add comprehensive troubleshooting guide for common web3 issues
 - **2026-09-24**: feat(security): integrate slither static analysis configuration
+- **2026-09-25**: ci: add automated gas reporting step to CI pipeline
