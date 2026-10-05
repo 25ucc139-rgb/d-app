@@ -162,3 +162,4 @@
 - **2026-09-24**: feat(security): integrate slither static analysis configuration
 - **2026-09-25**: ci: add automated gas reporting step to CI pipeline
 - **2026-10-03**: feat(frontend): add copy-to-clipboard feedback for contract addresses
+- **2026-10-05**: feat(ui): add tooltips for gas estimation and balance breakdown
