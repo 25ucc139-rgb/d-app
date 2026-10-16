@@ -164,3 +164,4 @@
 - **2026-10-03**: feat(frontend): add copy-to-clipboard feedback for contract addresses
 - **2026-10-05**: feat(ui): add tooltips for gas estimation and balance breakdown
 - **2026-10-09**: test: add integration test suite simulating full user deposit journey
+- **2026-10-16**: refactor: clean up legacy console logs and dead code references
