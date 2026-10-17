@@ -166,3 +166,4 @@
 - **2026-10-09**: test: add integration test suite simulating full user deposit journey
 - **2026-10-16**: refactor: clean up legacy console logs and dead code references
 - **2026-10-16**: docs: update README with live demo link, screenshots, and setup commands
+- **2026-10-17**: feat(frontend): optimize mobile viewport responsiveness and touch targets
