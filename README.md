@@ -387,5 +387,3 @@ MIT — feel free to fork, modify, and build on top of SentinelPay.
 *Built securely for the Decentralized Web. 🛡️*
 
 <!-- Revision: 2026-10-27 - chore: release v1.0.0 production deployment ready build -->
-
-<!-- Revision: 2026-10-16 - docs: update README with live demo link, screenshots, and setup commands -->
