@@ -116,4 +116,4 @@
 
 <!-- Revision: 2026-10-27 - chore: release v1.0.0 production deployment ready build -->
 - **2026-10-27**: chore: release v1.0.0 production deployment ready build
-- **2026-10-21**: chore: update dependencies and bump ethers to latest patch
+- **2026-10-22**: perf: compress public static assets and optimize bundle splitting
